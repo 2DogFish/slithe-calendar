@@ -267,3 +267,119 @@ catch(err){
   $('slitheDate').textContent = 'Calendar calculation error';
   $('periodDetail').textContent = err.message;
 }
+
+// Square calendar view
+let calendarAnchor = new Date();
+
+function addCstDays(date, days){
+  return new Date(cstStartOfDay(date).getTime() + days * DAY_MS);
+}
+
+function shortGregorian(date){
+  return new Intl.DateTimeFormat('en-US', {
+    timeZone:'UTC', month:'short', day:'numeric'
+  }).format(new Date(date.getTime() + CST_OFFSET_MS));
+}
+
+function inputValueForCstDate(date){
+  const p = cstParts(date);
+  return `${p.y}-${String(p.m).padStart(2,'0')}-${String(p.d).padStart(2,'0')}T12:00`;
+}
+
+function calendarDayButton(date, s, label){
+  const isToday = cstDayNumber(date) === cstDayNumber(new Date());
+  const holidayText = s.holidays.join(' · ');
+  const classes = ['calendar-day'];
+  if(isToday) classes.push('today');
+  if(holidayText) classes.push('holiday');
+  return `<button type="button" class="${classes.join(' ')}" data-calendar-date="${date.toISOString()}">` +
+    `<span class="calendar-day-glyph">${displayGlyph(s)}</span>` +
+    `<span class="calendar-day-number">${label}</span>` +
+    `<span class="calendar-day-date">${shortGregorian(date)}</span>` +
+    (holidayText ? `<span class="calendar-day-holiday">${holidayText}</span>` : '') +
+  `</button>`;
+}
+
+function renderSquareCalendar(anchor = calendarAnchor){
+  calendarAnchor = anchor;
+  const s = slitheFor(anchor);
+  const p = s.period;
+  const year = yearLabel(s.wholga);
+  const grid = $('calendarGrid');
+  const weekdayRow = $('calendarWeekdays');
+  const maneweRow = $('maneweRow');
+
+  $('calendarHeading').textContent = p.type === 'molo'
+    ? `${p.glyph} ${year} · ${p.name}`
+    : `${p.glyph} ${year} · Elcetre`;
+
+  $('calendarSubheading').textContent = p.type === 'molo'
+    ? `${p.animal} · Molo ${p.index} · ${formatCstDate(p.start)}–${formatCstDate(addCstDays(p.end,-1))}`
+    : `${p.animal} · Outside the weekly cycle · ${formatCstDate(p.start)}–${formatCstDate(addCstDays(p.end,-1))}`;
+
+  if(p.type === 'molo'){
+    weekdayRow.hidden = false;
+    weekdayRow.innerHTML = WEEKDAYS.map(d => `<span>${d}</span>`).join('');
+    grid.classList.remove('elcetre-grid');
+
+    const regularDays = Math.min(28, s.periodLength);
+    let html = '';
+    for(let i=0;i<regularDays;i++){
+      const date = addCstDays(p.start,i);
+      html += calendarDayButton(date, slitheFor(date), i+1);
+    }
+    grid.innerHTML = html;
+
+    const extra = Math.max(0, s.periodLength - 28);
+    if(extra){
+      maneweRow.hidden = false;
+      maneweRow.innerHTML = Array.from({length:extra},(_,i) => {
+        const date = addCstDays(p.start,28+i);
+        const day = slitheFor(date);
+        const today = cstDayNumber(date) === cstDayNumber(new Date()) ? ' today' : '';
+        return `<button type="button" class="manewe-day${today}" data-calendar-date="${date.toISOString()}">` +
+          `<strong>🐒 ${day.manewe.name}</strong>` +
+          `<span>${shortGregorian(date)} · Outside the weekly cycle</span>` +
+        `</button>`;
+      }).join('');
+    } else {
+      maneweRow.hidden = true;
+      maneweRow.innerHTML = '';
+    }
+  } else {
+    weekdayRow.hidden = true;
+    grid.classList.add('elcetre-grid');
+    maneweRow.hidden = true;
+    maneweRow.innerHTML = '';
+    grid.innerHTML = Array.from({length:s.periodLength},(_,i) => {
+      const date = addCstDays(p.start,i);
+      const day = slitheFor(date);
+      const label = day.holidays.includes('Arrovona') ? 'Arrovona' : i+1;
+      return calendarDayButton(date, day, label);
+    }).join('');
+  }
+}
+
+function moveCalendarPeriod(direction){
+  const s = slitheFor(calendarAnchor);
+  const target = direction < 0 ? addCstDays(s.period.start,-1) : s.period.end;
+  renderSquareCalendar(target);
+}
+
+$('calendarPrev').addEventListener('click', () => moveCalendarPeriod(-1));
+$('calendarNext').addEventListener('click', () => moveCalendarPeriod(1));
+$('calendarToday').addEventListener('click', () => renderSquareCalendar(new Date()));
+
+function chooseCalendarDate(event){
+  const button = event.target.closest('[data-calendar-date]');
+  if(!button) return;
+  const date = new Date(button.dataset.calendarDate);
+  $('converterInput').value = inputValueForCstDate(date);
+  const chosen = slitheFor(date);
+  $('converterResult').innerHTML = `<strong>${displayGlyph(chosen)} ${notation(chosen)}</strong><br>${detail(chosen)}<br><small>${formatCstDateTime(date)}</small>`;
+  $('converterResult').scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+
+$('calendarGrid').addEventListener('click', chooseCalendarDate);
+$('maneweRow').addEventListener('click', chooseCalendarDate);
+renderSquareCalendar(calendarAnchor);
