@@ -18,7 +18,31 @@ const MOLOS = [
 ];
 
 const ELCETRE = ['Elcetre','Eel','〰'];
+const PERIOD_ABBREVIATIONS = {
+  Elcetre: 'El',
+  Clethra: 'Cl',
+  Telo: 'Te',
+  Maptra: 'Ma',
+  Nepthor: 'Ne',
+  Dini: 'Di',
+  Melo: 'Me',
+  Fova: 'Fo',
+  Octon: 'Oc',
+  Unuthru: 'Un',
+  Glalgara: 'Gl',
+  Ilia: 'Il',
+  Benart: 'Be'
+};
 
+const ZEBARS = {
+  3:  { name: 'Zebar Bala',     abbreviation: 'Zb' },
+  6:  { name: 'Zebar Enoe',     abbreviation: 'Ze' },
+  8:  { name: 'Zebar Clarmone', abbreviation: 'Zc' },
+  11: { name: 'Zebar Zioda',    abbreviation: 'Zd' },
+  14: { name: 'Zebar Onartra',  abbreviation: 'Zo' },
+  17: { name: 'Zebar Ulecio',   abbreviation: 'Zu' },
+  19: { name: 'Zebar Zihatta',  abbreviation: 'Zh' }
+};
 const $ = id => document.getElementById(id);
 
 const cstParts = date => {
@@ -64,11 +88,43 @@ function nextNewMoonAfter(date){ return firstNewMoonAfter(new Date(date.getTime(
 
 function wholgaNumber(startYear){
   const n = startYear - 1943;
-  return n > 0 ? n : n - 1; // no year zero: Wholga 1 is preceded by Morgra 1
+  return n > 0 ? n : n - 1;
+}
+
+function eraForWholga(number){
+  if(number >= 1){
+    return {
+      type: 'E',
+      cycleName: 'Eoe',
+      yearName: 'Wholga',
+      cycle: Math.floor((number - 1) / 19) + 1,
+      year: ((number - 1) % 19) + 1
+    };
+  }
+
+  const distance = Math.abs(number);
+
+  return {
+    type: 'O',
+    cycleName: 'Oeo',
+    yearName: 'Morgra',
+    cycle: Math.floor((distance - 1) / 19) + 1,
+    year: 19 - ((distance - 1) % 19)
+  };
+}
+  const distance = Math.abs(number);
+
+  return {
+    type: 'O',
+    name: 'Oeo',
+    cycle: Math.floor((distance - 1) / 19) + 1,
+    year: 19 - ((distance - 1) % 19)
+  };
 }
 
 function yearLabel(number){
-  return number >= 1 ? `Wholga ${number}` : `Morgra ${Math.abs(number)}`;
+  const era = eraForWholga(number);
+  return `${era.type}${era.cycle}/${era.year}`;
 }
 
 function findWholgaBounds(date){
@@ -92,29 +148,37 @@ function buildWholga(date){
   const periods = [];
   const firstMoon = firstNewMoonAfter(w.startEvent);
 
-  periods.push({
-    type: 'elcetre',
-    name: ELCETRE[0],
-    animal: ELCETRE[1],
-    glyph: ELCETRE[2],
-    start: w.startDay,
-    end: cstStartOfDay(firstMoon)
-  });
+ periods.push({
+  type: 'elcetre',
+  name: ELCETRE[0],
+  abbreviation: PERIOD_ABBREVIATIONS.Elcetre,
+  animal: ELCETRE[1],
+  glyph: ELCETRE[2],
+  start: w.startDay,
+  end: cstStartOfDay(firstMoon)
+});
 
   let moon = firstMoon;
   let i = 0;
   while(cstDayNumber(moon) < cstDayNumber(w.endEvent) && i < 13){
     const next = nextNewMoonAfter(moon);
-    const info = MOLOS[i];
-    periods.push({
-      type: 'molo',
-      index: i+1,
-      name: info[0],
-      animal: info[1],
-      glyph: info[2],
-      start: cstStartOfDay(moon),
-      end: cstStartOfDay(next)
-    });
+  const info = MOLOS[i];
+const era = eraForWholga(w.number);
+const zebar = i === 12 ? ZEBARS[era.year] : null;
+const periodName = zebar ? zebar.name : info[0];
+
+periods.push({
+  type: 'molo',
+  index: i + 1,
+  name: periodName,
+  abbreviation: zebar
+    ? zebar.abbreviation
+    : PERIOD_ABBREVIATIONS[periodName],
+  animal: info[1],
+  glyph: info[2],
+  start: cstStartOfDay(moon),
+  end: cstStartOfDay(next)
+});
     moon = next;
     i++;
   }
@@ -159,9 +223,7 @@ function slitheFor(date){
     weekday: weekdayNumber,
     weekdayName: weekdayNumber ? WEEKDAYS[weekdayNumber-1] : null,
     holidays,
-    era: wholga.number >= 1 ? 'Wholga' : 'Morgra'
-  };
-}
+   era: eraForWholga(wholga.number)
 
 function notation(s){
   const year = yearLabel(s.wholga);
