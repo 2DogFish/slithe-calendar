@@ -58,7 +58,40 @@
       <article class="card">
         <div class="section-head"><div><p class="eyebrow">CONVERTER</p><h3>Gregorian → Slithe</h3></div></div>
         <form id="converterForm" class="converter">
-          <label>Date and time<input id="converterInput" type="datetime-local" required /></label>
+         <div class="historical-date-inputs">
+  <label>
+    Year
+    <input id="converterYear" type="number" min="1" value="2026" required />
+  </label>
+
+  <label>
+    Era
+    <select id="converterEra">
+      <option value="AD">AD</option>
+      <option value="BC">BC</option>
+    </select>
+  </label>
+
+  <label>
+    Month
+    <input id="converterMonth" type="number" min="1" max="12" value="7" required />
+  </label>
+
+  <label>
+    Day
+    <input id="converterDay" type="number" min="1" max="31" value="27" required />
+  </label>
+
+  <label>
+    Hour
+    <input id="converterHour" type="number" min="0" max="23" value="12" required />
+  </label>
+
+  <label>
+    Minute
+    <input id="converterMinute" type="number" min="0" max="59" value="0" required />
+  </label>
+</div>
           <p class="hint">Interpreted as Cena Standard Time.</p>
           <button type="submit">Convert date</button>
         </form>
