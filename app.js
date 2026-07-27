@@ -65,8 +65,29 @@ const cstDayNumber = date => {
 const utcFromCst = (y,m,d,h=0,min=0,s=0) => new Date(Date.UTC(y,m-1,d,h-9,min,s));
 const cstStartOfDay = date => { const p = cstParts(date); return utcFromCst(p.y,p.m,p.d); };
 const formatCstDate = date => new Intl.DateTimeFormat('en-US',{timeZone:'UTC',year:'numeric',month:'long',day:'numeric'}).format(new Date(date.getTime()+CST_OFFSET_MS));
-const formatCstDateTime = date => new Intl.DateTimeFormat('en-US',{timeZone:'UTC',year:'numeric',month:'short',day:'numeric',hour:'numeric',minute:'2-digit',second:'2-digit',hour12:true}).format(new Date(date.getTime()+CST_OFFSET_MS))+' CST';
+const formatCstDateTime = date => {
+  const cst = new Date(date.getTime() + CST_OFFSET_MS);
 
+  const year = cst.getUTCFullYear();
+  const displayYear = year <= 0 ? `${1 - year} BC` : `${year} AD`;
+
+  const month = cst.toLocaleString('en-US', {
+    timeZone: 'UTC',
+    month: 'short'
+  });
+
+  const day = cst.getUTCDate();
+
+  const time = cst.toLocaleString('en-US', {
+    timeZone: 'UTC',
+    hour: 'numeric',
+    minute: '2-digit',
+    second: '2-digit',
+    hour12: true
+  });
+
+  return `${month} ${day}, ${displayYear} ${time} CST`;
+};
 const formatDuration = ms => {
   ms = Math.max(0, ms);
   const days = Math.floor(ms / DAY_MS);
