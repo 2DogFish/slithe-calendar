@@ -99,7 +99,12 @@ function renderLive(){
   $('cstClock').textContent=formatCstDateTime(now); $('gregorianDate').textContent=formatCstDate(now);
   $('animalGlyph').textContent=s.period.glyph; $('animalName').textContent=s.isManewe?'MANEWE':s.period.name.toUpperCase();
   $('nextDay').textContent=formatDuration(nextCstMidnight(now)-now);
-  const nm=nextNewMoonAfter(now); $('nextMoon').textContent=`${formatDuration(nm-now)} · ${formatCstDateTime(nm)}`;
+  const nextMoloEvent = firstNewMoonAfter(nextCstMidnight(now));
+const nextMoloStart = cstStartOfDay(nextMoloEvent);
+const nextMolo = slitheFor(nextMoloStart);
+
+$('nextMoon').textContent =
+`${nextMolo.period.glyph} ${nextMolo.period.name} · ${formatDuration(nextMoloStart-now)} · ${formatCstDate(nextMoloStart)}`;
   $('nextWholga').textContent=`${formatDuration(s.wholgaData.endEvent-now)} · ${formatCstDateTime(s.wholgaData.endEvent)}`;
   renderPeriods(s);
 }
@@ -116,7 +121,12 @@ $('converterInput').value=localInputNow();
 $('converterForm').addEventListener('submit',e=>{
   e.preventDefault(); const raw=$('converterInput').value;
   try { const [datePart,timePart='00:00']=raw.split('T'); const [y,m,d]=datePart.split('-').map(Number); const [h,min]=timePart.split(':').map(Number); const dt=utcFromCst(y,m,d,h,min); const s=slitheFor(dt);
-    $('converterResult').innerHTML=`<strong>${notation(s)}</strong><br>${detail(s)}<br><small>${formatCstDateTime(dt)}</small>`;
+   const converterGlyph = s.isManewe ? '🐒' : s.period.glyph;
+
+$('converterResult').innerHTML =
+  `<strong>${converterGlyph} ${notation(s)}</strong>` +
+  `<br>${detail(s)}` +
+  `<br><small>${formatCstDateTime(dt)}</small>`;
   } catch(err){ $('converterResult').innerHTML='<span class="error">The date could not be converted.</span>'; }
 });
 
