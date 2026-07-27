@@ -266,7 +266,8 @@ function renderLive(){
   const s = slitheFor(now);
 
   $('slitheDate').textContent = notation(s);
-  $('eraLabel').textContent = `${s.era.toUpperCase()} ERA`;
+ $('eraLabel').textContent =
+  `${s.era.cycleName.toUpperCase()} ${s.era.cycle} · ${s.era.yearName.toUpperCase()} ${s.era.year}`;
   $('periodDetail').textContent = detail(s);
   $('cstClock').textContent = formatCstDateTime(now);
   $('gregorianDate').textContent = formatCstDate(now);
