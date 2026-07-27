@@ -36,6 +36,24 @@
       <article class="card metric"><span class="label">Next Wholga</span><strong id="nextWholga">—</strong></article>
     </section>
 
+    <section class="card calendar-card" aria-labelledby="calendarHeading">
+      <div class="calendar-toolbar">
+        <div>
+          <p class="eyebrow">SQUARE CALENDAR</p>
+          <h3 id="calendarHeading">Current Molo</h3>
+          <p id="calendarSubheading" class="calendar-subheading"></p>
+        </div>
+        <div class="calendar-actions" aria-label="Calendar navigation">
+          <button id="calendarPrev" class="secondary-button" type="button" aria-label="Previous period">← Previous</button>
+          <button id="calendarToday" class="secondary-button" type="button">Today</button>
+          <button id="calendarNext" class="secondary-button" type="button" aria-label="Next period">Next →</button>
+        </div>
+      </div>
+      <div id="calendarWeekdays" class="calendar-weekdays" aria-hidden="true"></div>
+      <div id="calendarGrid" class="calendar-grid" role="grid" aria-label="Slithe calendar days"></div>
+      <div id="maneweRow" class="manewe-row" hidden></div>
+    </section>
+
     <section class="grid two">
       <article class="card">
         <div class="section-head"><div><p class="eyebrow">CONVERTER</p><h3>Gregorian → Slithe</h3></div></div>
