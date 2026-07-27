@@ -21,3 +21,12 @@ h1,h2,h3,p { margin-top:0; } h1 { margin-bottom:0; font:600 clamp(2rem,4vw,3.8re
 footer { margin-top:22px; color:var(--muted); font-size:.78rem; flex-wrap:wrap; }
 .error { color:#ff9e9e; }
 @media (max-width:780px) { .hero { grid-template-columns:1fr; } .animal-seal { width:125px; } .three,.two { grid-template-columns:1fr; } .masthead { align-items:flex-start; } }
+.reference-grid { align-items:start; }
+.reference-card { padding:30px; }
+.name-list { margin:24px 0 0; padding:0; list-style:none; display:grid; gap:8px; }
+.name-list li { display:grid; grid-template-columns:34px 1fr; align-items:center; gap:10px; padding:10px 12px; border:1px solid var(--line); border-radius:11px; background:#0c0d10; }
+.name-list li span { color:var(--muted); font-size:.8rem; }
+.observance-list { margin:24px 0 0; display:grid; gap:8px; }
+.observance-list div { display:grid; grid-template-columns:110px 1fr; gap:12px; padding:10px 12px; border:1px solid var(--line); border-radius:11px; background:#0c0d10; }
+.observance-list dt { font-weight:800; color:var(--accent); }
+.observance-list dd { margin:0; color:var(--muted); }
