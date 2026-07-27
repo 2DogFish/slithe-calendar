@@ -299,20 +299,46 @@ function localInputNow(){
   return `${p.y}-${String(p.m).padStart(2,'0')}-${String(p.d).padStart(2,'0')}T${String(p.h).padStart(2,'0')}:${String(p.min).padStart(2,'0')}`;
 }
 
-$('converterInput').value = localInputNow();
+$('converterYear').value = cstParts(new Date()).y;
+$('converterMonth').value = cstParts(new Date()).m;
+$('converterDay').value = cstParts(new Date()).d;
+$('converterHour').value = cstParts(new Date()).h;
+$('converterMinute').value = cstParts(new Date()).min;
+$('converterEra').value = 'AD';
+
 $('converterForm').addEventListener('submit', e => {
   e.preventDefault();
-  const raw = $('converterInput').value;
+
+  const year = Number($('converterYear').value);
+  const era = $('converterEra').value;
+  const month = Number($('converterMonth').value);
+  const day = Number($('converterDay').value);
+  const hour = Number($('converterHour').value);
+  const minute = Number($('converterMinute').value);
+
+  const astronomicalYear = era === 'BC'
+    ? 1 - year
+    : year;
 
   try {
-    const [datePart,timePart='00:00'] = raw.split('T');
-    const [y,m,d] = datePart.split('-').map(Number);
-    const [h,min] = timePart.split(':').map(Number);
-    const dt = utcFromCst(y,m,d,h,min);
+    const dt = utcFromCst(
+      astronomicalYear,
+      month,
+      day,
+      hour,
+      minute
+    );
+
     const s = slitheFor(dt);
-    $('converterResult').innerHTML = `<strong>${displayGlyph(s)} ${notation(s)}</strong><br>${detail(s)}<br><small>${formatCstDateTime(dt)}</small>`;
+
+    $('converterResult').innerHTML =
+      `<strong>${displayGlyph(s)} ${notation(s)}</strong><br>` +
+      `${detail(s)}<br>` +
+      `<small>${formatCstDateTime(dt)}</small>`;
+
   } catch(err){
-    $('converterResult').innerHTML = '<span class="error">The date could not be converted.</span>';
+    $('converterResult').innerHTML =
+      '<span class="error">The date could not be converted.</span>';
   }
 });
 
