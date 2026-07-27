@@ -215,7 +215,8 @@ function slitheFor(date){
     weekdayName: weekdayNumber ? WEEKDAYS[weekdayNumber-1] : null,
     holidays,
    era: eraForWholga(wholga.number)
-
+  };
+}
 function notation(s){
   const year = yearLabel(s.wholga);
   let base;
