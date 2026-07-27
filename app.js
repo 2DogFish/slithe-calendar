@@ -101,7 +101,6 @@ function eraForWholga(number){
       year: ((number - 1) % 19) + 1
     };
   }
-
   const distance = Math.abs(number);
 
   return {
@@ -112,15 +111,7 @@ function eraForWholga(number){
     year: 19 - ((distance - 1) % 19)
   };
 }
-  const distance = Math.abs(number);
 
-  return {
-    type: 'O',
-    name: 'Oeo',
-    cycle: Math.floor((distance - 1) / 19) + 1,
-    year: 19 - ((distance - 1) % 19)
-  };
-}
 
 function yearLabel(number){
   const era = eraForWholga(number);
