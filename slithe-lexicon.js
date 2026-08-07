@@ -6,7 +6,7 @@ window.SLITHE_LEXICON = [
     term:'Vivese', pos:'doctrine', category:'Strategy',
     definition:'Leave a realistic avenue for surrender or withdrawal so an opponent is not needlessly forced into desperation.',
     assertion:'analytical_judgment',
-    triggers:['surrender was not offered','no opportunity to surrender','withdrawal was impossible','no route of withdrawal','escape routes were closed','denied surrender','refused surrender'],
+   triggers:['surrender was not offered','no opportunity to surrender','did not offer an opportunity to surrender','did not offer the defenders an opportunity to surrender','withdrawal was impossible','no route of withdrawal','escape routes were closed','denied surrender','refused surrender'],
     counterSignals:['surrender was offered','allowed to surrender','withdrawal route remained open','allowed to withdraw'],
     notes:'Absence or violation may be classified when a source explicitly indicates that a reasonable surrender or withdrawal avenue was denied. Do not infer solely from encirclement.'
   },
