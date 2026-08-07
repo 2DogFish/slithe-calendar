@@ -132,7 +132,55 @@
         </dl>
       </article>
     </section>
+<section class="card ai-panel">
+  <div class="section-head">
+    <div>
+      <p class="eyebrow">SLITHE AI · BETA</p>
+      <h3>Translate & classify English</h3>
+    </div>
+    <span class="beta-badge">LOCAL BETA</span>
+  </div>
 
+  <p class="ai-intro">
+    Paste a report, sentence, or doctrinal passage. The beta only uses encoded Slithe definitions; it does not invent missing vocabulary.
+  </p>
+
+  <form id="slitheAiForm" class="ai-form">
+    <label>
+      English text
+      <textarea id="slitheAiInput" rows="6" placeholder="The occupying force did not offer the defenders an opportunity to surrender."></textarea>
+    </label>
+
+    <div class="ai-actions">
+      <button type="submit">Analyze in Slithe</button>
+      <button type="button" class="secondary" id="slitheExample">Load example</button>
+    </div>
+  </form>
+
+  <div class="ai-output-grid">
+    <div>
+      <p class="eyebrow">BETA TRANSLATION</p>
+      <div id="slitheTranslation" class="result">Enter English text above.</div>
+    </div>
+
+    <div>
+      <p class="eyebrow">CLASSIFICATIONS</p>
+      <div id="slitheClassifications" class="ai-results">
+        <p class="muted-copy">No analysis yet.</p>
+      </div>
+    </div>
+  </div>
+
+  <details class="lexicon-browser">
+    <summary>Browse beta machine lexicon</summary>
+    <input id="lexiconSearch" type="search" placeholder="Search term, category, or meaning">
+    <div id="lexiconResults"></div>
+  </details>
+
+  <p class="ai-warning">
+    <strong>Beta rule:</strong> unknown grammar remains untranslated. A missing classification means “not encoded yet,” not “does not apply.”
+  </p>
+</section>
     <section class="card doctrine">
       <p class="eyebrow">CALENDAR STANDARD</p>
       <h3>One official clock. Astronomical boundaries. Civil days.</h3>
